@@ -1,0 +1,60 @@
+* Required packages
+
+ - nilfs-utils or nilfs-tools
+ - core-utils, util-linux, procps-ng (pgrep), gawk
+
+* Usage
+
+Currently only test-nilfs-mount.sh is available to test vairous NILFS
+mount patterns.
+
+In the following example, the block device on which the file system
+will be placed is /dev/vdb1.
+
+ $ sudo mkfs -t nilfs2 /dev/vdb1
+ $ sudo ./test-mount.sh -d /dev/vdb1 /mnt/test /mnt/snapshot
+ .
+ .
+ Preparation complete - once unmount /mnt/test
+ === Start test_1: mount (rw) & umount
+ - mount -t nilfs2 /dev/vdb1 /mnt/test
+ - umount /mnt/test
+ test_1 succeeded.
+ === Start test_2: mount (ro) & umount
+ - mount -t nilfs2 -r /dev/vdb1 /mnt/test
+ - umount /mnt/test
+ test_2 succeeded.
+ === Start test_3: mount (nogc) & umount
+ - mount -t nilfs2 -o nogc /dev/vdb1 /mnt/test
+ - umount /mnt/test
+ test_3 succeeded.
+ .
+ .
+ .
+ === Start test_16: mount (rw) & snapshot mount & umount (rw) & umount (snapshot)
+ - mount -t nilfs2 /dev/vdb1 /mnt/test
+ - mount -t nilfs2 -o ro,cp=38866 /dev/vdb1 /mnt/snapshot
+ - umount /mnt/test
+ - umount /mnt/snapshot
+ test_16 succeeded.
+ === Start test_17: mount (snapshot) & mount (rw) && mount (remount, ro) & umount (snapshot) & umount (ro)
+ - mount -t nilfs2 -o ro,cp=38866 /dev/vdb1 /mnt/snapshot
+ - mount -t nilfs2 /dev/vdb1 /mnt/test
+ - mount -t nilfs2 -o remount,ro /dev/vdb1 /mnt/test
+ - umount /mnt/snapshot
+ - umount /mnt/test
+ test_17 succeeded.
+ Done all tests.
+
+If the script fails during execution, it will print an error message
+and abort.
+
+* How to get this sources
+
+ $ cd your-work-directory
+ $ git clone https://github.com/konis/nilfs-test-tools.git
+
+* Developer's notes
+
+The central resource for nilfs-utils development is the mailing list
+(linux-nilfs@vger.kernel.org).
