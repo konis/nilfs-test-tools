@@ -25,12 +25,12 @@ function is_nilfs_mountpoint() {
 
 function get_device() {
     # $1: mount point
-    df "$1" | awk 'NR>1{print $1; quit;}'
+    df "$1" | awk 'NR>1{print $1; exit;}'
 }
 
 function get_snapshot_cno() {
     # $1: device
-    lscp -sr $1 | awk 'NR>1{print $1; quit;}'
+    lscp -sr $1 | awk 'NR>1{print $1; exit;}'
 }
 
 # Escape pathname string (only spaces are supported)
